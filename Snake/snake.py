@@ -50,8 +50,10 @@ snake = visual.Circle(
     units="pix",
     fillColor="limegreen",
     size=((size_box[0] * 0.9), (size_box[1] * 0.9)),
+    # size=(100, 100),
 )
 
+snake.setAutoDraw(True)
 
 ###############################################################################
 #                               the actual game                               #
@@ -61,6 +63,7 @@ down = False
 right = False
 left = False
 x = y = 0
+# counter = 0
 
 
 while True:
@@ -83,10 +86,24 @@ while True:
         win.close()
 
     if up:
-        # y += 1
+        y += 1
+        up = False
+    elif down:
+        y -= 1
+        down = False
+    elif right:
+        x += 1
+        right = False
+    elif left:
+        x -= 1
+        left = False
 
-    snake.pos = little_helpers.coord(tex_size, n_tiles, size_box, 20, 20)
-    snake.setAutoDraw = True
+    snake.pos = little_helpers.coord(tex_size, n_tiles, size_box, x, y)
+
+    # snake.pos = (100, 100)
+    # snake.draw()
+    # snake.setAutoDraw = True
+
 
 # win.flip()
 # core.wait(5)
