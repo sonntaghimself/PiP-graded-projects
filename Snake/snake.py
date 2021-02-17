@@ -15,6 +15,10 @@
 # > when the snake eats, a little munching sound
 # TIPP: A mask.
 
+# having a high_score file that acutally is printed out at the start and the
+# end would be cool?
+# also, increase score every time a snack is eaten
+
 import numpy as np
 import little_helpers
 from psychopy import visual, core, event
@@ -26,11 +30,11 @@ from psychopy import visual, core, event
 tex_size = 800
 n_tiles = 40
 size_box = ((tex_size / n_tiles), (tex_size / n_tiles))
+settings = little_helpers.settings()
 
 ###############################################################################
 #                              the visual window                              #
 ###############################################################################
-
 win = visual.Window(size=(800, 800), units="pix")
 
 grey = [0, 0, 0]
@@ -58,11 +62,24 @@ snake.setAutoDraw(True)
 ###############################################################################
 #                               the actual game                               #
 ###############################################################################
+if settings["difficulty"] == "easy":
+    speed = 30
+elif settings["difficulty"] == "medium":
+    speed = 20
+elif settings["difficulty"] == "hard":
+    speed = 10
+elif settings["difficulty"] == "insane":
+    speed = 5
+elif settings["difficulty"] == "yoda":
+    speed = 1
+
+
 up = False
 down = False
 right = False
 left = False
 x = y = 0
+score = 0
 # counter = 0
 
 
@@ -87,16 +104,20 @@ while True:
 
     if up:
         y += 1
-        up = False
+        for fps in range(speed):
+            win.flip()
     elif down:
         y -= 1
-        down = False
+        for fps in range(speed):
+            win.flip()
     elif right:
         x += 1
-        right = False
+        for fps in range(speed):
+            win.flip()
     elif left:
         x -= 1
-        left = False
+        for fps in range(speed):
+            win.flip()
 
     snake.pos = little_helpers.coord(tex_size, n_tiles, size_box, x, y)
 
