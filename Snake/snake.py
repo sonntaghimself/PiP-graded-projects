@@ -35,14 +35,18 @@ settings = little_helpers.settings()
 ###############################################################################
 #                              the visual window                              #
 ###############################################################################
-win = visual.Window(size=(800, 800), units="pix")
+win = visual.Window(size=(800, 800), units="pix", colorSpace="rgb255")
 
-grey = [0, 0, 0]
+# grey = [0, 0, 0]
+# darkolivegreen1 = [85, 107, 47]
+darkolivegreen1 = [-0.33, -0.16, -0.63]
+darkolivegreen2 = [0.58, 1, -0.12]
 
-tex = np.array([grey, grey])
+tex = np.array([darkolivegreen1, darkolivegreen2])
+# tex = np.array([grey, grey])
 tex = np.tile(tex, (int(n_tiles / 2), int(n_tiles / 2), 1))
 
-grid = visual.ImageStim(win, image=tex, size=tex_size, units="pix")
+grid = visual.ImageStim(win, image=tex, size=tex_size, units="pix", colorSpace="rgb255")
 grid.draw()
 win.flip()
 
@@ -58,7 +62,15 @@ snake = visual.Circle(
 )
 
 snake.setAutoDraw(True)
-
+###############################################################################
+#                                  the food                                   #
+###############################################################################
+food = visual.ImageStim(
+    win,
+    image="mouse.png",
+    units="pix",
+    size=((size_box[0] * 0.9), (size_box[1] * 0.9)),
+)
 ###############################################################################
 #                               the actual game                               #
 ###############################################################################
@@ -121,6 +133,25 @@ while True:
 
     snake.pos = little_helpers.coord(tex_size, n_tiles, size_box, x, y)
 
+    # if settings["walls"] == "yes":
+    #     if (abs(snake.pos[0]) > 800) or (abs(snake.pos[1]) > 800):
+    #         print("Game Over")
+    #         break
+    #         win.flip()
+
+    if "f" in keys:
+        food_x = np.random.randint(n_tiles + 1)
+        food_y = np.random.randint(n_tiles + 1)
+        food.pos = little_helpers.coord(tex_size, n_tiles, size_box, food_x, food_y)
+        food.draw()
+
+    # if (abs(snake.pos[0]) > 800) or (abs(snake.pos[1]) > 800):
+    #     if settings["walls"] == "yes":
+    #         print("Game Over")
+    #         break
+    #         win.flip()
+    #     else:
+
     # snake.pos = (100, 100)
     # snake.draw()
     # snake.setAutoDraw = True
@@ -131,6 +162,3 @@ while True:
 
 # win.close()
 # core.quit()
-
-
-# food = visual.ImageStim(win, image="mouse.png", units="pix")

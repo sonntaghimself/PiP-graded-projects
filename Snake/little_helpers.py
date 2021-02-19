@@ -14,18 +14,21 @@ def settings():
     )
     myDlg.addField("obstacles:", choices=["yes", "no I'm scared"])
     myDlg.addField("dark mode:", choices=["yes", "no I'm scared"])
+    myDlg.addField("the walls are lava:", choices=["yes", "no I'm scared"])
     ok_data = myDlg.show()
     if (
         isinstance(ok_data[0], str)
         and isinstance(ok_data[1], str)
         and isinstance(ok_data[2], str)
         and isinstance(ok_data[3], str)
+        and isinstance(ok_data[4], str)
     ):
         stuff = {
             "name": ok_data[0],
             "difficulty": ok_data[1],
             "obstacles": ok_data[2],
             "dark mode": ok_data[3],
+            "walls": ok_data[3],
         }
         return stuff
     else:
