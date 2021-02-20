@@ -1,0 +1,11 @@
+Hello {},
+Welcome to Snake!
+
+You might have guessed that, but the controls are:
+
+{} = up
+{} = down
+{} = left
+{} = right
+
+to start the game press any key.

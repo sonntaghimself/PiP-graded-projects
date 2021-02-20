@@ -31,6 +31,12 @@ tex_size = 800
 n_tiles = 40
 size_box = ((tex_size / n_tiles), (tex_size / n_tiles))
 settings = little_helpers.settings()
+text_color = [255, 0, 0]
+ctrl_keys = {"up": "w", "down": "s", "left": "a", "right": "d"}
+files = little_helpers.make_files()
+inst_text = little_helpers.reading_instructions(files, ctrl_keys, settings["name"])
+inst_text = inst_text["instructions"]
+highscore = little_helpers.reading_score()
 
 ###############################################################################
 #                              the visual window                              #
@@ -53,8 +59,18 @@ win.flip()
 ###############################################################################
 #                                Start screen                                 #
 ###############################################################################
-
-
+start_text = visual.TextStim(
+    win,
+    units="pix",
+    colorSpace="rgb255",
+    font="times",
+    color=text_color,
+    height=(tex_size / 32),
+    text=inst_text,
+)
+start_text.draw()
+win.flip()
+event.waitKeys()
 ###############################################################################
 #                              the actual snake                               #
 ###############################################################################
@@ -77,18 +93,6 @@ food = visual.ImageStim(
     size=((size_box[0] * 0.9), (size_box[1] * 0.9)),
 )
 ###############################################################################
-#                                 End screen                                  #
-###############################################################################
-End = visual.TextStim(
-    win,
-    text="Game Over.",
-    units="pix",
-    height=(tex_size / 16),
-    font="times",
-    colorSpace="rgb255",
-    color=[255, 0, 0],
-)
-###############################################################################
 #                               the actual game                               #
 ###############################################################################
 if settings["difficulty"] == "easy":
@@ -107,24 +111,25 @@ up = False
 down = False
 right = False
 left = False
-x = y = 0
+x = y = 19
 score = 0
-# counter = 0
+counter = 0
 
 
 while True:
+    # counter += 1
     keys = event.getKeys()
     win.flip()
-    if "w" in keys:
+    if ctrl_keys["up"] in keys:
         up = True
         down = right = left = False
-    elif "s" in keys:
+    elif ctrl_keys["down"] in keys:
         down = True
         up = right = left = False
-    elif "d" in keys:
+    elif ctrl_keys["right"] in keys:
         right = True
         down = up = left = False
-    elif "a" in keys:
+    elif ctrl_keys["left"] in keys:
         left = True
         up = right = down = False
     elif "escape" in keys:
@@ -148,51 +153,59 @@ while True:
         for fps in range(speed):
             win.flip()
 
-    # snake.pos = little_helpers.coord(tex_size, n_tiles, size_box, x, y)
+    if x >= 40 or y >= 40 or x < 0 or y < 0:
+        if settings["walls"] == "yes":
+            snake.setAutoDraw(False)
+            # End.draw()
+            # win.flip()
+            # event.waitKeys()
+            break
+            win.flip()
+
+        elif settings["walls"] != "yes":
+            if y >= 40:
+                y -= 40
+            elif y < 0:
+                y += 40
+            if x >= 40:
+                x -= 40
+            elif x < 0:
+                x += 40
+
     snake_pos_x, snake_pos_y = little_helpers.coord(tex_size, n_tiles, size_box, x, y)
     snake.pos = (snake_pos_x, snake_pos_y)
-    print(snake_pos_x, snake_pos_y)
-
-    # if settings["walls"] == "yes":
-    #     if (abs(snake.pos[0]) > 800) or (abs(snake.pos[1]) > 800):
-    #         print("Game Over")
-    #         break
-    #         win.flip()
 
     if "f" in keys:
         food_x = np.random.randint(n_tiles + 1)
         food_y = np.random.randint(n_tiles + 1)
-        food.pos = little_helpers.coord(tex_size, n_tiles, size_box, food_x, food_y)
+        food.pos = little_helpers.coord(
+            tex_size,
+            n_tiles,
+            size_box,
+            food_x,
+            food_y,
+        )
         food.draw()
 
-    if (abs(snake_pos_x) > 400) or (abs(snake_pos_y) > 400):
-        if settings["walls"] == "yes":
-            snake.setAutoDraw(False)
-            End.draw()
-            win.flip()
-            event.waitKeys()
-            break
-            win.flip()
-        elif settings["walls"] != "yes":
-            if abs(snake_pos_x) > abs(snake_pos_y):
-                snake.pos = ((snake_pos_x * (-1)), snake_pos_y)
-            elif abs(snake_pos_x) < abs(snake_pos_y):
-                snake.pos = (snake_pos_x, (snake_pos_y * (-1)))
-                # NOTE:
-                # think
-                # about
-                # why this
-                # isn't
-                # working
-                # right
-
-    # snake.pos = (100, 100)
-    # snake.draw()
-    # snake.setAutoDraw = True
+###############################################################################
+#                                 End screen                                  #
+###############################################################################
+End = visual.TextStim(
+    win,
+    text="Game Over. \nYour Score was: {} \n\nThe current highscore is: {} \nand it is held by: {}".format(
+        counter,
+        highscore[0]["Score"],
+        highscore[0]["Name"],
+    ),
+    units="pix",
+    height=(tex_size / 16),
+    font="times",
+    colorSpace="rgb255",
+    color=text_color,
+)
+End.draw()
+win.flip()
+event.waitKeys()
 
 
-# win.flip()
-# core.wait(5)
-
-# win.close()
-# core.quit()
+little_helpers.write_score(settings["name"], files, counter)
