@@ -43,16 +43,16 @@ highscore = little_helpers.reading_score()
 ###############################################################################
 win = visual.Window(size=(800, 800), units="pix", colorSpace="rgb255")
 
-# grey = [0, 0, 0]
+grey = [0, 0, 0]
 # darkolivegreen1 = [85, 107, 47]
-darkolivegreen1 = [-0.33, -0.16, -0.63]
-darkolivegreen2 = [0.58, 1, -0.12]
+# darkolivegreen1 = [-0.33, -0.16, -0.63]
+# darkolivegreen2 = [0.58, 1, -0.12]
 
-tex = np.array([darkolivegreen1, darkolivegreen2])
-# tex = np.array([grey, grey])
+# tex = np.array([darkolivegreen1, darkolivegreen2])
+tex = np.array([grey, grey])
 tex = np.tile(tex, (int(n_tiles / 2), int(n_tiles / 2), 1))
 
-grid = visual.ImageStim(win, image=tex, size=tex_size, units="pix", colorSpace="rgb255")
+grid = visual.ImageStim(win, image=tex, size=tex_size, units="pix")
 grid.draw()
 win.flip()
 
@@ -81,8 +81,6 @@ snake = visual.Circle(
     size=((size_box[0] * 0.9), (size_box[1] * 0.9)),
     # size=(100, 100),
 )
-
-snake.setAutoDraw(True)
 ###############################################################################
 #                                  the food                                   #
 ###############################################################################
@@ -114,25 +112,42 @@ left = False
 x = y = 19
 score = 0
 counter = 0
-
+food_x = np.random.randint(n_tiles + 1)
+food_y = np.random.randint(n_tiles + 1)
+food.setAutoDraw(True)
+snake.setAutoDraw(True)
 
 while True:
     # counter += 1
     keys = event.getKeys()
     win.flip()
     if ctrl_keys["up"] in keys:
-        up = True
-        down = right = left = False
+        if down:
+            down = True
+        else:
+            up = True
+            down = right = left = False
     elif ctrl_keys["down"] in keys:
-        down = True
-        up = right = left = False
+        if up:
+            up = True
+        else:
+            down = True
+            up = right = left = False
     elif ctrl_keys["right"] in keys:
-        right = True
-        down = up = left = False
+        if right:
+            right = True
+        else:
+            right = True
+            down = up = left = False
     elif ctrl_keys["left"] in keys:
-        left = True
-        up = right = down = False
+        if left:
+            left = True
+        else:
+            left = True
+            up = right = down = False
     elif "escape" in keys:
+        snake.setAutoDraw(False)
+        food.setAutoDraw(False)
         break
         win.close()
 
@@ -172,21 +187,21 @@ while True:
             elif x < 0:
                 x += 40
 
+    if food.overlaps(snake):
+        food_x = np.random.randint(n_tiles + 1)
+        food_y = np.random.randint(n_tiles + 1)
+        counter += 1
+
     snake_pos_x, snake_pos_y = little_helpers.coord(tex_size, n_tiles, size_box, x, y)
     snake.pos = (snake_pos_x, snake_pos_y)
 
-    if "f" in keys:
-        food_x = np.random.randint(n_tiles + 1)
-        food_y = np.random.randint(n_tiles + 1)
-        food.pos = little_helpers.coord(
-            tex_size,
-            n_tiles,
-            size_box,
-            food_x,
-            food_y,
-        )
-        food.draw()
-
+    food.pos = little_helpers.coord(
+        tex_size,
+        n_tiles,
+        size_box,
+        food_x,
+        food_y,
+    )
 ###############################################################################
 #                                 End screen                                  #
 ###############################################################################
