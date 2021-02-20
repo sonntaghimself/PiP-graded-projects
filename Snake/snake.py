@@ -51,6 +51,11 @@ grid.draw()
 win.flip()
 
 ###############################################################################
+#                                Start screen                                 #
+###############################################################################
+
+
+###############################################################################
 #                              the actual snake                               #
 ###############################################################################
 snake = visual.Circle(
@@ -70,6 +75,18 @@ food = visual.ImageStim(
     image="mouse.png",
     units="pix",
     size=((size_box[0] * 0.9), (size_box[1] * 0.9)),
+)
+###############################################################################
+#                                 End screen                                  #
+###############################################################################
+End = visual.TextStim(
+    win,
+    text="Game Over.",
+    units="pix",
+    height=(tex_size / 16),
+    font="times",
+    colorSpace="rgb255",
+    color=[255, 0, 0],
 )
 ###############################################################################
 #                               the actual game                               #
@@ -131,7 +148,10 @@ while True:
         for fps in range(speed):
             win.flip()
 
-    snake.pos = little_helpers.coord(tex_size, n_tiles, size_box, x, y)
+    # snake.pos = little_helpers.coord(tex_size, n_tiles, size_box, x, y)
+    snake_pos_x, snake_pos_y = little_helpers.coord(tex_size, n_tiles, size_box, x, y)
+    snake.pos = (snake_pos_x, snake_pos_y)
+    print(snake_pos_x, snake_pos_y)
 
     # if settings["walls"] == "yes":
     #     if (abs(snake.pos[0]) > 800) or (abs(snake.pos[1]) > 800):
@@ -145,12 +165,26 @@ while True:
         food.pos = little_helpers.coord(tex_size, n_tiles, size_box, food_x, food_y)
         food.draw()
 
-    # if (abs(snake.pos[0]) > 800) or (abs(snake.pos[1]) > 800):
-    #     if settings["walls"] == "yes":
-    #         print("Game Over")
-    #         break
-    #         win.flip()
-    #     else:
+    if (abs(snake_pos_x) > 400) or (abs(snake_pos_y) > 400):
+        if settings["walls"] == "yes":
+            snake.setAutoDraw(False)
+            End.draw()
+            win.flip()
+            event.waitKeys()
+            break
+            win.flip()
+        elif settings["walls"] != "yes":
+            if abs(snake_pos_x) > abs(snake_pos_y):
+                snake.pos = ((snake_pos_x * (-1)), snake_pos_y)
+            elif abs(snake_pos_x) < abs(snake_pos_y):
+                snake.pos = (snake_pos_x, (snake_pos_y * (-1)))
+                # NOTE:
+                # think
+                # about
+                # why this
+                # isn't
+                # working
+                # right
 
     # snake.pos = (100, 100)
     # snake.draw()

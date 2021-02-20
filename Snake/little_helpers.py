@@ -28,7 +28,7 @@ def settings():
             "difficulty": ok_data[1],
             "obstacles": ok_data[2],
             "dark mode": ok_data[3],
-            "walls": ok_data[3],
+            "walls": ok_data[4],
         }
         return stuff
     else:
