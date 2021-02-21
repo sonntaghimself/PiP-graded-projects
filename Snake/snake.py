@@ -18,6 +18,7 @@
 # having a high_score file that acutally is printed out at the start and the
 # end would be cool?
 # also, increase score every time a snack is eaten
+# figure out how to actually draw a snake that gets longer everytime it eats
 
 import numpy as np
 import little_helpers
@@ -91,6 +92,18 @@ food = visual.ImageStim(
     size=((size_box[0] * 0.9), (size_box[1] * 0.9)),
 )
 ###############################################################################
+#                                current score                                #
+###############################################################################
+cur_scr = visual.TextStim(
+    win,
+    font="times",
+    units="pix",
+    colorSpace="rgb255",
+    color=text_color,
+    height=(tex_size / 32),
+    pos=(-250, 350),
+)
+###############################################################################
 #                               the actual game                               #
 ###############################################################################
 if settings["difficulty"] == "easy":
@@ -116,9 +129,12 @@ food_x = np.random.randint(n_tiles + 1)
 food_y = np.random.randint(n_tiles + 1)
 food.setAutoDraw(True)
 snake.setAutoDraw(True)
+points = list()
 
 while True:
     # counter += 1
+    cur_scr.text = little_helpers.current_score(counter)
+    cur_scr.setAutoDraw(True)
     keys = event.getKeys()
     win.flip()
     if ctrl_keys["up"] in keys:
@@ -194,6 +210,9 @@ while True:
 
     snake_pos_x, snake_pos_y = little_helpers.coord(tex_size, n_tiles, size_box, x, y)
     snake.pos = (snake_pos_x, snake_pos_y)
+    current_points = list((snake_pos_x, snake_pos_y))
+    current_points.append(points)
+    points = current_points
 
     food.pos = little_helpers.coord(
         tex_size,
@@ -218,6 +237,8 @@ End = visual.TextStim(
     colorSpace="rgb255",
     color=text_color,
 )
+
+cur_scr.setAutoDraw(False)
 End.draw()
 win.flip()
 event.waitKeys()

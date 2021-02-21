@@ -102,3 +102,11 @@ def reading_instructions(files, ctrl_keys, name):
                 )
 
     return txtInst
+
+
+###############################################################################
+#                         printing the current score                          #
+###############################################################################
+def current_score(counter):
+    cur_scr = "Your current score: {}".format(counter)
+    return cur_scr
