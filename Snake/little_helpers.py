@@ -64,8 +64,9 @@ def make_files():
 ###############################################################################
 def write_score(name, files, score):
     if os.path.isfile(files["scorefile"]):
-        with open("highscore.csv", "a") as csvfile:
+        with open("highscore.csv", "w") as csvfile:
             writer = csv.writer(csvfile)
+            writer.writerow(["Name", "Score", "Date"])
             writer.writerow([name, score, files["date"]])
     else:
         with open("highscore.csv", "w+") as csvfile:
@@ -78,10 +79,14 @@ def write_score(name, files, score):
 #                              reading the score                              #
 ###############################################################################
 def reading_score():
-    data = pd.read_csv("highscore.csv")
-    # return data[data.Score == data.Score.max()]
-    data = data[data.Score == data.Score.max()]
-    data = data.to_dict(orient="records")
+    files = make_files()
+    if os.path.isfile(files["scorefile"]):
+        data = pd.read_csv("highscore.csv")
+        # return data[data.Score == data.Score.max()]
+        data = data[data.Score == data.Score.max()]
+        data = data.to_dict(orient="records")
+    else:
+        data = None
     return data
 
 

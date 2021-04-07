@@ -45,11 +45,7 @@ highscore = little_helpers.reading_score()
 win = visual.Window(size=(800, 800), units="pix", colorSpace="rgb255")
 
 grey = [0, 0, 0]
-# darkolivegreen1 = [85, 107, 47]
-# darkolivegreen1 = [-0.33, -0.16, -0.63]
-# darkolivegreen2 = [0.58, 1, -0.12]
 
-# tex = np.array([darkolivegreen1, darkolivegreen2])
 tex = np.array([grey, grey])
 tex = np.tile(tex, (int(n_tiles / 2), int(n_tiles / 2), 1))
 
@@ -69,9 +65,11 @@ start_text = visual.TextStim(
     height=(tex_size / 32),
     text=inst_text,
 )
+
 start_text.draw()
 win.flip()
 event.waitKeys()
+
 ###############################################################################
 #                              the actual snake                               #
 ###############################################################################
@@ -82,6 +80,7 @@ snake = visual.Circle(
     size=((size_box[0] * 0.9), (size_box[1] * 0.9)),
     # size=(100, 100),
 )
+
 ###############################################################################
 #                                  the food                                   #
 ###############################################################################
@@ -91,6 +90,7 @@ food = visual.ImageStim(
     units="pix",
     size=((size_box[0] * 0.9), (size_box[1] * 0.9)),
 )
+
 ###############################################################################
 #                                current score                                #
 ###############################################################################
@@ -103,6 +103,7 @@ cur_scr = visual.TextStim(
     height=(tex_size / 32),
     pos=(-250, 350),
 )
+
 ###############################################################################
 #                               the actual game                               #
 ###############################################################################
@@ -224,24 +225,52 @@ while True:
 ###############################################################################
 #                                 End screen                                  #
 ###############################################################################
-End = visual.TextStim(
-    win,
-    text="Game Over. \nYour Score was: {} \n\nThe current highscore is: {} \nand it is held by: {}".format(
-        counter,
-        highscore[0]["Score"],
-        highscore[0]["Name"],
-    ),
-    units="pix",
-    height=(tex_size / 16),
-    font="times",
-    colorSpace="rgb255",
-    color=text_color,
-)
+if highscore is None:
+    End = visual.TextStim(
+        win,
+        text="NEW HIGHSCORE !!!! CONGRATULATIONS !!!!! \nYour New highscore is: {}".format(
+            counter
+        ),
+        units="pix",
+        height=(tex_size / 16),
+        font="times",
+        colorSpace="rgb255",
+        color=text_color,
+    )
+
+    little_helpers.write_score(settings["name"], files, counter)
+
+elif counter <= highscore[0]["Score"]:
+    End = visual.TextStim(
+        win,
+        text="Game Over. \nYour Score was: {} \n\nThe current highscore is: {} \nand it is held by: {}".format(
+            counter,
+            highscore[0]["Score"],
+            highscore[0]["Name"],
+        ),
+        units="pix",
+        height=(tex_size / 16),
+        font="times",
+        colorSpace="rgb255",
+        color=text_color,
+    )
+
+elif counter > highscore[0]["Score"]:
+    End = visual.TextStim(
+        win,
+        text="NEW HIGHSCORE !!!! CONGRATULATIONS !!!!! \nYour New highscore is: {}".format(
+            counter
+        ),
+        units="pix",
+        height=(tex_size / 16),
+        font="times",
+        colorSpace="rgb255",
+        color=text_color,
+    )
+
+    little_helpers.write_score(settings["name"], files, counter)
 
 cur_scr.setAutoDraw(False)
 End.draw()
 win.flip()
 event.waitKeys()
-
-
-little_helpers.write_score(settings["name"], files, counter)
