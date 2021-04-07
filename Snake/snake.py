@@ -118,14 +118,13 @@ elif settings["difficulty"] == "insane":
 elif settings["difficulty"] == "yoda":
     speed = 1
 
-
 up = False
 down = False
 right = False
 left = False
 x = y = 19
 score = 0
-counter = 0
+counter = -1
 food_x = np.random.randint(n_tiles + 1)
 food_y = np.random.randint(n_tiles + 1)
 food.setAutoDraw(True)
@@ -222,6 +221,7 @@ while True:
         food_x,
         food_y,
     )
+
 ###############################################################################
 #                                 End screen                                  #
 ###############################################################################
