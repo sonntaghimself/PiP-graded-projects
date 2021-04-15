@@ -60,3 +60,63 @@ def make_dirs(filename):
         elif askUser == "n":
             sys.exit()
     return files
+
+
+###############################################################################
+#                    Randomizing the experimental sequence                    #
+###############################################################################
+import random
+
+
+def randomization(stimuli, compatibility, vpInfo, prms, files):
+    stim = list(zip(stimuli, compatibility))
+
+    # 2D list of dicts for blocks*trials
+    global expSeq, iblk, blk, stim_blk, practice, itrl, trl
+    expSeq = [
+        [{} for _ in range(prms["num"]["ntrls"])] for _ in range(prms["num"]["nblks"])
+    ]
+
+    for iblk, blk in enumerate(expSeq):
+
+        if iblk == 0:  # different number of trials in practise block
+            stim_blk = stim * int((prms["num"]["nprac"] / len(stim)))
+            practice = True
+        else:
+            stim_blk = stim * int((prms["num"]["ntrls"] / len(stim)))
+            practice = False
+
+        # shuffle stimuli in each block
+        random.shuffle(stim_blk)
+
+        for itrl, trl in enumerate(blk):
+
+            if itrl >= len(stim_blk):  # empty dict positions
+                break
+
+            for key in vpInfo:
+                trl[key] = vpInfo[key]
+
+            trl["expname"] = files["expname"]
+            trl["blk"] = iblk + 1  # python 0 index!
+            trl["trl"] = itrl + 1
+            trl["practice"] = practice
+
+            # code stimulus
+            trl["stimulus"] = stim_blk[itrl][0]
+            trl["compatibility"] = stim_blk[itrl][1]
+
+            # code response
+            if trl["stimulus"][2] == "H":
+                trl["corr_key"] = prms["keys"]["left"]
+            elif trl["stimulus"][2] == "S":
+                trl["corr_key"] = prms["keys"]["right"]
+
+        return expSeq
+
+
+###############################################################################
+#                            Reading instructions                             #
+###############################################################################
+
+def reading(files, keys):
