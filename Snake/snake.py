@@ -42,7 +42,7 @@ highscore = little_helpers.reading_score()
 ###############################################################################
 #                              the visual window                              #
 ###############################################################################
-win = visual.Window(size=(800, 800), units="pix", colorSpace="rgb255")
+win = visual.Window(size=(800, 800), units="pix", colorSpace="rgb255", useFBO=False)
 
 grey = [0, 0, 0]
 
@@ -73,7 +73,18 @@ event.waitKeys()
 ###############################################################################
 #                              the actual snake                               #
 ###############################################################################
-snake = visual.Circle(
+snake = visual.ImageStim(
+    win,
+    image="snake.png",
+    units="pix",
+    size=((size_box[0] * 0.9), (size_box[1] * 0.9)),
+    # size=(100, 100),
+)
+
+###############################################################################
+#                                 tail pieces                                 #
+###############################################################################
+tail = visual.Circle(
     win,
     units="pix",
     fillColor="limegreen",
@@ -119,48 +130,74 @@ elif settings["difficulty"] == "yoda":
     speed = 1
 
 up = False
-down = False
+down = True
 right = False
 left = False
 x = y = 19
 score = 0
-counter = -1
+counter = 0
 food_x = np.random.randint(n_tiles + 1)
 food_y = np.random.randint(n_tiles + 1)
+food.pos = (food_x, food_y)
 food.setAutoDraw(True)
 snake.setAutoDraw(True)
-points = list()
+length = 3
+points = None
+for i in range(length):
+    if points is None:
+        points = little_helpers.coord_list(
+            tex_size,
+            n_tiles,
+            size_box,
+            x,
+            (y - i),
+        )
+    else:
+        points = points + little_helpers.coord_list(
+            tex_size,
+            n_tiles,
+            size_box,
+            x,
+            (y - i),
+        )
+
+# print(points)
+# print(points[1])
 
 while True:
     # counter += 1
     cur_scr.text = little_helpers.current_score(counter)
     cur_scr.setAutoDraw(True)
     keys = event.getKeys()
-    win.flip()
+    # win.flip()
     if ctrl_keys["up"] in keys:
         if down:
             down = True
         else:
             up = True
             down = right = left = False
+            snake.ori = 180
     elif ctrl_keys["down"] in keys:
         if up:
             up = True
         else:
             down = True
             up = right = left = False
+            snake.ori = 0
     elif ctrl_keys["right"] in keys:
         if right:
             right = True
         else:
             right = True
             down = up = left = False
+            snake.ori = 270
     elif ctrl_keys["left"] in keys:
         if left:
             left = True
         else:
             left = True
             up = right = down = False
+            snake.ori = 90
     elif "escape" in keys:
         snake.setAutoDraw(False)
         food.setAutoDraw(False)
@@ -187,9 +224,6 @@ while True:
     if x >= 40 or y >= 40 or x < 0 or y < 0:
         if settings["walls"] == "yes":
             snake.setAutoDraw(False)
-            # End.draw()
-            # win.flip()
-            # event.waitKeys()
             break
             win.flip()
 
@@ -203,16 +237,26 @@ while True:
             elif x < 0:
                 x += 40
 
-    if food.overlaps(snake):
+    if snake.pos[0] == food.pos[0] and snake.pos[1] == food.pos[1]:
         food_x = np.random.randint(n_tiles + 1)
         food_y = np.random.randint(n_tiles + 1)
         counter += 1
+        length += 1
 
     snake_pos_x, snake_pos_y = little_helpers.coord(tex_size, n_tiles, size_box, x, y)
     snake.pos = (snake_pos_x, snake_pos_y)
-    current_points = list((snake_pos_x, snake_pos_y))
-    current_points.append(points)
-    points = current_points
+    current_points = [(snake_pos_x, snake_pos_y)]
+    # current_points.append(points)
+    # points = current_points
+    points = current_points + points
+
+    # for i in range(length):
+    #     tail.pos = points[i + 1]
+    #     tail.draw()
+    #     win.flip(clearBuffer=False)
+
+    # if len(points) > length:
+    #     points.pop()
 
     food.pos = little_helpers.coord(
         tex_size,
