@@ -10,6 +10,7 @@ from psychopy import visual, event, core
 parameters = {
     "time": {"fix": 30, "feedback": 30, "iti": 30},
     "num": {"nblks": 12, "nprac": 10, "ntrls": 60},
+    # "num": {"nblks": 3, "nprac": 4, "ntrls": 4},
     "keys": "space",
     "size_boxes": (50, 50),
     "clicks": {"H": "left", "S": "right"},
@@ -134,12 +135,12 @@ for blk in expSeq:  # block loop
                     first = False
             if buttons[0] > nclicks:
                 nclicks += 1
-                if mouse.isPressedIn(left_box, buttons=[0]):
-                    response = "left"
-                    trl_complete = True
-                elif mouse.isPressedIn(right_box, buttons=[0]):
-                    response = "right"
-                    trl_complete = True
+            if mouse.isPressedIn(left_box, buttons=[0]):
+                response = "left"
+                trl_complete = True
+            elif mouse.isPressedIn(right_box, buttons=[0]):
+                response = "right"
+                trl_complete = True
 
         if response == trl["corr_resp"]:
             corr = 1
@@ -171,12 +172,12 @@ for blk in expSeq:  # block loop
     corr = [x["corr"] for x in blk]
     blk_per = (corr.count(1) / num_trls) * 100
 
-    fb_txt = "Correct:{2:.0f}%".format(blk_num, blk_per)
+    fb_txt = "Block {}, \n Correct: {}%".format(blk_num, blk_per)
     fb_txt = fb_txt + "\n\nPress the spacebar to continue."
     fbStim.text = fb_txt
     fbStim.draw()
     win.flip()
-    event.waitKeys(keyList=[parameters["keys"]["cont"]])
+    event.waitKeys(keyList=[parameters["keys"]])
 
     # blank screen for inter-trial-interval
     for _ in range(parameters["time"]["iti"]):
