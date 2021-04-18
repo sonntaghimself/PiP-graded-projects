@@ -57,4 +57,11 @@ stopWatch = core.Clock()
 #############
 instStim = visual.TextStim(win, text=inst_text["inst1"], alignText="left")
 fbStim = visual.TextStim(win)
-fixStim = visual.ShapeStim(win,lineWidth=2,lineColor="white",pos=(0, 0),vertices=((-10, 0), (10, 0), (0, 0), (0, 10), (0, -10)), closeShape=False,)
+fixStim = visual.ShapeStim(
+        win,
+        lineWidth=2,
+        lineColor="white",
+        pos=(0, 0),
+        vertices=((-10, 0), (10, 0), (0, 0), (0, 10), (0, -10)),
+        closeShape=False,
+)
