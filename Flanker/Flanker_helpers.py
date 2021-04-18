@@ -119,4 +119,14 @@ def randomization(stimuli, compatibility, vpInfo, prms, files):
 #                            Reading instructions                             #
 ###############################################################################
 
+
 def reading(files, keys):
+    txtInst = {}
+    for fname in os.listdir(files["insdir"]):
+        if fname.endswith(".txt"):
+            with open(os.path.join(files["insdir"], fname), "r") as f:
+                txtInst[os.path.splitext(fname)[0]] = f.read().format(
+                    keys["left"].upper(), keys["right"].upper()
+                )
+
+    return txtInst

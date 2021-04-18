@@ -37,3 +37,24 @@ expSeq = Flanker_helpers.randomization(
 ###############################################################################
 #                            Reading Instructions                             #
 ###############################################################################
+inst_text = Flanker_helpers.reading(files, parameters["keys"])
+
+###############################################################################
+#                              Psychopy Objects                               #
+###############################################################################
+############
+#  window  #
+############
+win = visual.Window(size=(640, 480), color=(0, 0, 0), units="pix")
+
+###########
+#  timer  #
+###########
+stopWatch = core.Clock()
+
+#############
+#  stimuli  #
+#############
+instStim = visual.TextStim(win, text=inst_text["inst1"], alignText="left")
+fbStim = visual.TextStim(win)
+fixStim = visual.ShapeStim(win,lineWidth=2,lineColor="white",pos=(0, 0),vertices=((-10, 0), (10, 0), (0, 0), (0, 10), (0, -10)), closeShape=False,)
