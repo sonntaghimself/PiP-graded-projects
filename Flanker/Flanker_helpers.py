@@ -1,5 +1,6 @@
 from psychopy import gui, os
 import datetime as dt
+import random
 
 ###############################################################################
 #                                   VP Info                                   #
@@ -65,25 +66,25 @@ def make_dirs(filename):
 ###############################################################################
 #                    Randomizing the experimental sequence                    #
 ###############################################################################
-import random
 
 
-def randomization(stimuli, compatibility, vpInfo, prms, files):
+def randomization(stimuli, compatibility, vpInfo, parameters, files):
     stim = list(zip(stimuli, compatibility))
 
     # 2D list of dicts for blocks*trials
     global expSeq, iblk, blk, stim_blk, practice, itrl, trl
     expSeq = [
-        [{} for _ in range(prms["num"]["ntrls"])] for _ in range(prms["num"]["nblks"])
+        [{} for _ in range(parameters["num"]["ntrls"])]
+        for _ in range(parameters["num"]["nblks"])
     ]
 
     for iblk, blk in enumerate(expSeq):
 
         if iblk == 0:  # different number of trials in practise block
-            stim_blk = stim * int((prms["num"]["nprac"] / len(stim)))
+            stim_blk = stim * int((parameters["num"]["nprac"] / len(stim)))
             practice = True
         else:
-            stim_blk = stim * int((prms["num"]["ntrls"] / len(stim)))
+            stim_blk = stim * int((parameters["num"]["ntrls"] / len(stim)))
             practice = False
 
         # shuffle stimuli in each block
@@ -108,9 +109,9 @@ def randomization(stimuli, compatibility, vpInfo, prms, files):
 
             # code response
             if trl["stimulus"][2] == "H":
-                trl["corr_key"] = prms["keys"]["left"]
+                trl["corr_resp"] = parameters["clicks"]["H"]
             elif trl["stimulus"][2] == "S":
-                trl["corr_key"] = prms["keys"]["right"]
+                trl["corr_resp"] = parameters["clicks"]["S"]
 
         return expSeq
 
@@ -120,13 +121,15 @@ def randomization(stimuli, compatibility, vpInfo, prms, files):
 ###############################################################################
 
 
-def reading(files, keys):
+def reading(files, parameters):
     txtInst = {}
     for fname in os.listdir(files["insdir"]):
         if fname.endswith(".txt"):
             with open(os.path.join(files["insdir"], fname), "r") as f:
                 txtInst[os.path.splitext(fname)[0]] = f.read().format(
-                    keys["left"].upper(), keys["right"].upper()
+                    parameters["clicks"]["H"].capitalize(),
+                    parameters["clicks"]["S"].capitalize(),
+                    parameters["keys"],
                 )
 
     return txtInst
