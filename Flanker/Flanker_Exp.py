@@ -7,10 +7,15 @@ from psychopy import visual, event, core
 ###############################################################################
 #                              global Parameters                              #
 ###############################################################################
+
+############################################
+#  IMPORTANT: n has to be divideable by 4  #
+############################################
+
 parameters = {
     "time": {"fix": 30, "feedback": 30, "iti": 30},
-    "num": {"nblks": 12, "nprac": 10, "ntrls": 60},
-    # "num": {"nblks": 3, "nprac": 4, "ntrls": 4},
+    # "num": {"nblks": 12, "nprac": 10, "ntrls": 60},
+    "num": {"nblks": 1, "pracblks": 1, "nprac": 4, "ntrls": 4},
     "keys": "space",
     "size_boxes": (50, 50),
     "clicks": {"H": "left", "S": "right"},

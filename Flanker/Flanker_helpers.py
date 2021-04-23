@@ -71,49 +71,42 @@ def make_dirs(filename):
 def randomization(stimuli, compatibility, vpInfo, parameters, files):
     stim = list(zip(stimuli, compatibility))
 
-    # 2D list of dicts for blocks*trials
-    global expSeq, iblk, blk, stim_blk, practice, itrl, trl
-    expSeq = [
-        [{} for _ in range(parameters["num"]["ntrls"])]
-        for _ in range(parameters["num"]["nblks"])
-    ]
+    totblks = parameters["num"]["pracblks"] + parameters["num"]["nblks"]
+
+    expSeq = [[{} for _ in range(parameters["num"]["ntrls"])] for _ in range(totblks)]
 
     for iblk, blk in enumerate(expSeq):
 
-        if iblk == 0:  # different number of trials in practise block
+        if iblk < parameters["num"]["pracblks"]:
             stim_blk = stim * int((parameters["num"]["nprac"] / len(stim)))
             practice = True
         else:
             stim_blk = stim * int((parameters["num"]["ntrls"] / len(stim)))
             practice = False
 
-        # shuffle stimuli in each block
         random.shuffle(stim_blk)
 
         for itrl, trl in enumerate(blk):
 
-            if itrl >= len(stim_blk):  # empty dict positions
+            if itrl >= len(stim_blk):
                 break
 
-            for key in vpInfo:
-                trl[key] = vpInfo[key]
+            for i in vpInfo:
+                trl[i] = vpInfo[i]
 
             trl["expname"] = files["expname"]
-            trl["blk"] = iblk + 1  # python 0 index!
+            trl["blk"] = iblk + 1
             trl["trl"] = itrl + 1
             trl["practice"] = practice
-
-            # code stimulus
             trl["stimulus"] = stim_blk[itrl][0]
             trl["compatibility"] = stim_blk[itrl][1]
 
-            # code response
             if trl["stimulus"][2] == "H":
                 trl["corr_resp"] = parameters["clicks"]["H"]
             elif trl["stimulus"][2] == "S":
                 trl["corr_resp"] = parameters["clicks"]["S"]
 
-        return expSeq
+    return expSeq
 
 
 ###############################################################################
