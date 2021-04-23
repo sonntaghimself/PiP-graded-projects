@@ -14,7 +14,6 @@ from psychopy import visual, event, core
 
 parameters = {
     "time": {"fix": 30, "feedback": 30, "iti": 30},
-    # "num": {"nblks": 12, "nprac": 10, "ntrls": 60},
     "num": {"nblks": 1, "pracblks": 1, "nprac": 4, "ntrls": 4},
     "keys": "space",
     "size_boxes": (50, 50),
@@ -199,7 +198,7 @@ dataDF = pd.DataFrame()
 dataDF = dataDF.from_dict(tmpData)
 
 # write to * .txt
-dataDF.to_csv(files["resfile"], header=True, index=False, sep="\t", mode="w")
+dataDF.to_csv(files["resfile"], header=True, index=False, sep=",", mode="w")
 
 # close window and quit
 win.close()
