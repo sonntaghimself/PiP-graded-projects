@@ -125,13 +125,14 @@ for blk in expSeq:  # block loop
         # get response
 
         mouse.clickReset()
-        # event.clearEvents()
+        event.clearEvents()
         trl_complete = False
         nclicks = 0
         mouse_positions = [mouse.getPos()]
         first = True
         while trl_complete is not True:
-            buttons, times = mouse.getPressed(getTime=True)
+            # buttons, times = mouse.getPressed(getTime=True)
+            buttons = mouse.getPressed()
             if mouse.mouseMoved():
                 mouse_positions.append(mouse.getPos())
                 if first is True:
@@ -140,9 +141,11 @@ for blk in expSeq:  # block loop
             if buttons[0] > nclicks:
                 nclicks += 1
             if mouse.isPressedIn(left_box, buttons=[0]):
+                rt = stopWatch.getTime()
                 response = "left"
                 trl_complete = True
             elif mouse.isPressedIn(right_box, buttons=[0]):
+                rt = stopWatch.getTime()
                 response = "right"
                 trl_complete = True
 
@@ -161,9 +164,10 @@ for blk in expSeq:  # block loop
         # update data dict
         trl["date"] = dt.datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
         trl["nclicks"] = nclicks
-        trl["rt"] = {"first_movement": first_movement, "times": times}
+        trl["rt"] = {"start_rt": first_movement, "end_rt": rt}
         trl["corr"] = corr
-        trl["pos"] = mouse_positions
+        if vp_info["record_pos"] is True:
+            trl["pos"] = mouse_positions
 
         # blank screen for inter-trial-interval
         for _ in range(parameters["time"]["iti"]):

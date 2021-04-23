@@ -15,6 +15,7 @@ def gather_information():
         "Gender:", choices=["female", "male", "diverse", "I don't want to answer"]
     )
     myDlg.addField("Handedness", choices=["l", "r"])
+    myDlg.addField("record movement", choices=["True", "False"])
     ok_data = myDlg.show()
     if (
         # type(ok_data[0]) == int
@@ -29,6 +30,7 @@ def gather_information():
             "age": ok_data[1],
             "gender": ok_data[2],
             "handedness": ok_data[3],
+            "record_pos": ok_data[4],
         }
         return vpInfo
     else:
