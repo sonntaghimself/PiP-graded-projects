@@ -204,6 +204,23 @@ dataDF = dataDF.from_dict(tmpData)
 # write to * .txt
 dataDF.to_csv(files["resfile"], header=True, index=False, sep=",", mode="w")
 
+
+if vp_info["gender"] == "male":
+    address = " dude !!"
+else:
+    address = " you are awesome !!!"
+
+end_text = "The Experiment is done, thank you so much for participating{}".format(
+    address
+)
+
+end_text = end_text + "\n\n may the force be with you"
+
+fbStim.text = end_text
+fbStim.draw()
+win.flip()
+event.waitKeys()
+
 # close window and quit
 win.close()
 core.quit()
