@@ -22,6 +22,7 @@
 
 import numpy as np
 import little_helpers
+import os
 from psychopy import visual, core, event
 
 ###############################################################################
@@ -75,10 +76,9 @@ event.waitKeys()
 ###############################################################################
 snake = visual.ImageStim(
     win,
-    image="snake.png",
+    image=files["images"] + os.sep + "snake.png",
     units="pix",
     size=((size_box[0] * 0.9), (size_box[1] * 0.9)),
-    # size=(100, 100),
 )
 
 ###############################################################################
@@ -89,7 +89,6 @@ tail = visual.Circle(
     units="pix",
     fillColor="limegreen",
     size=((size_box[0] * 0.9), (size_box[1] * 0.9)),
-    # size=(100, 100),
 )
 
 ###############################################################################
@@ -97,7 +96,7 @@ tail = visual.Circle(
 ###############################################################################
 food = visual.ImageStim(
     win,
-    image="mouse.png",
+    image=files["images"] + os.sep + "mouse.png",
     units="pix",
     size=((size_box[0] * 0.9), (size_box[1] * 0.9)),
 )
@@ -116,7 +115,7 @@ cur_scr = visual.TextStim(
 )
 
 ###############################################################################
-#                               the actual game                               #
+#                            setting up the speed                             #
 ###############################################################################
 if settings["difficulty"] == "easy":
     speed = 30
@@ -129,6 +128,9 @@ elif settings["difficulty"] == "insane":
 elif settings["difficulty"] == "yoda":
     speed = 1
 
+###############################################################################
+#                       preparing the experimental loop                       #
+###############################################################################
 up = False
 down = True
 right = False
@@ -162,15 +164,14 @@ for i in range(length):
             (y - i),
         )
 
-# print(points)
-# print(points[1])
 
+###############################################################################
+#                               the actual game                               #
+###############################################################################
 while not game_over:
-    # counter += 1
     cur_scr.text = little_helpers.current_score(counter)
     cur_scr.setAutoDraw(True)
     keys = event.getKeys()
-    # win.flip()
     if ctrl_keys["up"] in keys:
         if down:
             down = True

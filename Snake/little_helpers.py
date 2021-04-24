@@ -65,8 +65,9 @@ def coord_list(tex_size, n_tiles, size_box, x, y):
 def make_files():
     files = {"dirname": os.getcwd()}
     files["date"] = dt.datetime.today().strftime("%d/%m/%Y")
-    files["scorefile"] = files["dirname"] + os.sep + "highscore.csv"
+    files["scorefile"] = files["dirname"] + os.sep + "Score" + os.sep + "highscore.csv"
     files["insdir"] = files["dirname"] + os.sep + "Instructions"
+    files["images"] = files["dirname"] + os.sep + "images"
     return files
 
 
@@ -92,7 +93,7 @@ def write_score(name, files, score):
 def reading_score():
     files = make_files()
     if os.path.isfile(files["scorefile"]):
-        data = pd.read_csv("highscore.csv")
+        data = pd.read_csv(files["scorefile"])
         # return data[data.Score == data.Score.max()]
         data = data[data.Score == data.Score.max()]
         data = data.to_dict(orient="records")
