@@ -75,15 +75,26 @@ def randomization(stimuli, compatibility, vpInfo, parameters, files):
 
     totblks = parameters["num"]["pracblks"] + parameters["num"]["nblks"]
 
-    expSeq = [[{} for _ in range(parameters["num"]["ntrls"])] for _ in range(totblks)]
+    if parameters["num"]["ntrls"] < 4:
+        expSeq = [[{} for _ in range(4)] for _ in range(totblks)]
+    elif parameters["num"]["ntrls"] >= 4:
+        expSeq = [
+            [{} for _ in range(parameters["num"]["ntrls"])] for _ in range(totblks)
+        ]
 
     for iblk, blk in enumerate(expSeq):
 
         if iblk < parameters["num"]["pracblks"]:
-            stim_blk = stim * int((parameters["num"]["nprac"] / len(stim)))
+            if parameters["num"]["nprac"] <= 4:
+                stim_blk = stim
+            else:
+                stim_blk = stim * int((parameters["num"]["nprac"] / len(stim)))
             practice = True
         else:
-            stim_blk = stim * int((parameters["num"]["ntrls"] / len(stim)))
+            if parameters["num"]["ntrls"] <= 4:
+                stim_blk = stim
+            else:
+                stim_blk = stim * int((parameters["num"]["ntrls"] / len(stim)))
             practice = False
 
         random.shuffle(stim_blk)

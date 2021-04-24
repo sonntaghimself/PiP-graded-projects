@@ -7,14 +7,11 @@ from psychopy import visual, event, core
 ###############################################################################
 #                              global Parameters                              #
 ###############################################################################
-
-############################################
-#  IMPORTANT: n has to be divideable by 4  #
-############################################
+# NOTE: trials are always gonna be a multiple of 4 due to the stim list
 
 parameters = {
     "time": {"fix": 30, "feedback": 30, "iti": 30},
-    "num": {"nblks": 1, "pracblks": 1, "nprac": 4, "ntrls": 4},
+    "num": {"nblks": 5, "pracblks": 1, "nprac": 4, "ntrls": 20},
     "keys": "space",
     "size_boxes": (50, 50),
     "clicks": {"H": "left", "S": "right"},
@@ -214,7 +211,9 @@ end_text = "The Experiment is done, thank you so much for participating{}".forma
     address
 )
 
-end_text = end_text + "\n\n may the force be with you"
+end_text = end_text + "\n\n may the force be with you."
+
+end_text = end_text + "\n\n press any key to end the experiment."
 
 fbStim.text = end_text
 fbStim.draw()
