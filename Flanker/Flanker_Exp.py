@@ -11,7 +11,8 @@ from psychopy import visual, event, core
 
 parameters = {
     "time": {"fix": 30, "feedback": 30, "iti": 30},
-    "num": {"nblks": 5, "pracblks": 1, "nprac": 4, "ntrls": 20},
+    # "num": {"nblks": 5, "pracblks": 1, "nprac": 4, "ntrls": 20},
+    "num": {"nblks": 1, "pracblks": 1, "nprac": 4, "ntrls": 4},
     "keys": "space",
     "size_boxes": (50, 50),
     "clicks": {"H": "left", "S": "right"},
@@ -119,7 +120,9 @@ for blk in expSeq:  # block loop
         win.callOnFlip(stopWatch.reset)
         win.flip()
 
-        # get response
+        ###############################################################################
+        #                                 trial Loop                                  #
+        ###############################################################################
 
         mouse.clickReset()
         event.clearEvents()
@@ -127,24 +130,28 @@ for blk in expSeq:  # block loop
         nclicks = 0
         mouse_positions = [mouse.getPos()]
         first = True
+        clicked = True
+
         while trl_complete is not True:
-            # buttons, times = mouse.getPressed(getTime=True)
             buttons = mouse.getPressed()
+            if buttons[0] == 0:
+                clicked = False
             if mouse.mouseMoved():
                 mouse_positions.append(mouse.getPos())
                 if first is True:
                     first_movement = stopWatch.getTime()
                     first = False
-            if buttons[0] > nclicks:
+            if buttons[0] == 1 and clicked is False:
                 nclicks += 1
-            if mouse.isPressedIn(left_box, buttons=[0]):
-                rt = stopWatch.getTime()
-                response = "left"
-                trl_complete = True
-            elif mouse.isPressedIn(right_box, buttons=[0]):
-                rt = stopWatch.getTime()
-                response = "right"
-                trl_complete = True
+                clicked = True
+                if mouse.isPressedIn(left_box, buttons=[0]):
+                    rt = stopWatch.getTime()
+                    response = "left"
+                    trl_complete = True
+                elif mouse.isPressedIn(right_box, buttons=[0]):
+                    rt = stopWatch.getTime()
+                    response = "right"
+                    trl_complete = True
 
         if response == trl["corr_resp"]:
             corr = 1
@@ -163,7 +170,7 @@ for blk in expSeq:  # block loop
         trl["nclicks"] = nclicks
         trl["rt"] = {"start_rt": first_movement, "end_rt": rt}
         trl["corr"] = corr
-        if vp_info["record_pos"] is True:
+        if vp_info["record_pos"] == "True":
             trl["pos"] = mouse_positions
 
         # blank screen for inter-trial-interval
