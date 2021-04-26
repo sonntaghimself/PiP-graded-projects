@@ -142,8 +142,6 @@ game_over = False
 food_x = np.random.randint(n_tiles + 1)
 food_y = np.random.randint(n_tiles + 1)
 food.pos = (food_x, food_y)
-food.setAutoDraw(True)
-snake.setAutoDraw(True)
 length = 3
 points = None
 for i in range(length):
@@ -153,7 +151,7 @@ for i in range(length):
             n_tiles,
             size_box,
             x,
-            (y - i),
+            (y + (i + 1)),
         )
     else:
         points = points + little_helpers.coord_list(
@@ -161,7 +159,7 @@ for i in range(length):
             n_tiles,
             size_box,
             x,
-            (y - i),
+            (y + (i + 1)),
         )
 
 
@@ -187,15 +185,15 @@ while not game_over:
             up = right = left = False
             snake.ori = 0
     elif ctrl_keys["right"] in keys:
-        if right:
-            right = True
+        if left:
+            left = True
         else:
             right = True
             down = up = left = False
             snake.ori = 270
     elif ctrl_keys["left"] in keys:
-        if left:
-            left = True
+        if right:
+            right = True
         else:
             left = True
             up = right = down = False
@@ -203,51 +201,17 @@ while not game_over:
     elif "escape" in keys:
         snake.setAutoDraw(False)
         food.setAutoDraw(False)
+        win.flip(clearBuffer=True)
+        game_over = True
         break
-        win.close()
-
-    # if up:
-    #     y += 1
-    #     for fps in range(speed):
-    #         # win.flip(clearBuffer=False)
-    #         win.flip(clearBuffer=True)
-    #         for i in range(length):
-    #             tail.pos = points[i + 1]
-    #             tail.draw()
-    #             win.flip(clearBuffer=False)
-    # elif down:
-    #     y -= 1
-    #     for fps in range(speed):
-    #         # win.flip(clearBuffer=False)
-    #         win.flip(clearBuffer=True)
-    #         for i in range(length):
-    #             tail.pos = points[i + 1]
-    #             tail.draw()
-    #             win.flip(clearBuffer=False)
-    # elif right:
-    #     x += 1
-    #     for fps in range(speed):
-    #         # win.flip(clearBuffer=False)
-    #         win.flip(clearBuffer=True)
-    #         for i in range(length):
-    #             tail.pos = points[i + 1]
-    #             tail.draw()
-    #             win.flip(clearBuffer=False)
-    # elif left:
-    #     x -= 1
-    #     for fps in range(speed):
-    #         # win.flip(clearBuffer=False)
-    #         win.flip(clearBuffer=True)
-    #         for i in range(length):
-    #             tail.pos = points[i + 1]
-    #             tail.draw()
-    #             win.flip(clearBuffer=False)
+        # win.close()
 
     if x >= 40 or y >= 40 or x < 0 or y < 0:
         if settings["walls"] == "yes":
             snake.setAutoDraw(False)
-            break
             win.flip(clearBuffer=True)
+            game_over = True
+            break
 
         elif settings["walls"] != "yes":
             if y >= 40:
@@ -258,12 +222,6 @@ while not game_over:
                 x -= 40
             elif x < 0:
                 x += 40
-
-    if snake.pos[0] == food.pos[0] and snake.pos[1] == food.pos[1]:
-        food_x = np.random.randint(n_tiles + 1)
-        food_y = np.random.randint(n_tiles + 1)
-        counter += 1
-        length += 1
 
     snake_pos_x, snake_pos_y = little_helpers.coord(
         tex_size,
@@ -276,61 +234,53 @@ while not game_over:
     snake.pos = (snake_pos_x, snake_pos_y)
     current_points = [(snake_pos_x, snake_pos_y)]
 
+    win.flip(clearBuffer=True)
+    snake.draw()
+    food.draw()
+
+    for i in range(length):
+        tail.pos = points[i]
+        tail.draw()
+
+    for i in range(1, length):
+        if snake_pos_x == points[i][0] and snake_pos_y == points[i][1]:
+            game_over = True
+            break
+
+    if snake.pos[0] == food.pos[0] and snake.pos[1] == food.pos[1]:
+        food_x = np.random.randint(n_tiles + 1)
+        food_y = np.random.randint(n_tiles + 1)
+        counter += 1
+        length += 1
+
     if points is None:
         points = current_points
     elif points is not None:
         points = current_points + points
 
-    win.flip(clearBuffer=True)
-
-    for i in range(length):
-        tail.pos = points[i + 1]
-        tail.draw()
-        win.flip(clearBuffer=False)
-
-    # if len(points) > length:
-    #     points.pop()
+    if len(points) > (length):
+        points.pop()
 
     if up:
         y += 1
         for fps in range(speed):
             fps
-            # win.flip(clearBuffer=False)
-            # win.flip(clearBuffer=True)
-            # for i in range(length):
-            #     tail.pos = points[i + 1]
-            #     tail.draw()
-            # win.flip(clearBuffer=False)
+            core.wait(0.005)
     elif down:
         y -= 1
         for fps in range(speed):
             fps
-            # win.flip(clearBuffer=False)
-            # win.flip(clearBuffer=True)
-            # for i in range(length):
-            #     tail.pos = points[i + 1]
-            #     tail.draw()
-            #     win.flip(clearBuffer=False)
+            core.wait(0.005)
     elif right:
         x += 1
         for fps in range(speed):
             fps
-            # win.flip(clearBuffer=False)
-            # win.flip(clearBuffer=True)
-            # for i in range(length):
-            #     tail.pos = points[i + 1]
-            #     tail.draw()
-            # win.flip(clearBuffer=False)
+            core.wait(0.005)
     elif left:
         x -= 1
         for fps in range(speed):
             fps
-            # win.flip(clearBuffer=False)
-            # win.flip(clearBuffer=True)
-            # for i in range(length):
-            #     tail.pos = points[i + 1]
-            #     tail.draw()
-            #     win.flip(clearBuffer=False)
+            core.wait(0.005)
 
     food.pos = little_helpers.coord(
         tex_size,
