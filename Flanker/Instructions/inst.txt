@@ -1,0 +1,14 @@
+Hello, 
+
+Thank you for participating in this experiment.
+
+You will have to complete several blocks containing trials with variations of a 5
+letter array. Your task is to react to the central letter of this array.
+
+if you see an "H" in the center of the array, please click in the box on the
+very {}
+
+if you see an "S" in the center of the array, please click in the box on the
+very {}
+
+to continue please click {}.
