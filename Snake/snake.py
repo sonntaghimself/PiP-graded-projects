@@ -1,25 +1,3 @@
-# the idea is to reproduce the popular phone game snake.
-# pygame.key (see Solutions 8.12.2020) would be a smart option for me to use i
-# think.
-
-# important things i need to implement:
-#     > if snake moves out on one edge, it reenters on the next
-#     > food appears in random locations, if the snake eats it, it grows.
-#     > if the snake bites itself, you loose
-#     > when do you complete a level and move on to the next?
-
-# some additional ideas:
-# > obstacles on new levels
-# > snake in the dark, not actually being able to see the whole game, but just
-# a few degrees of visual angle in front of my snake. Plus/minus 30 degrees
-# > when the snake eats, a little munching sound
-# TIPP: A mask.
-
-# having a high_score file that acutally is printed out at the start and the
-# end would be cool?
-# also, increase score every time a snack is eaten
-# figure out how to actually draw a snake that gets longer everytime it eats
-
 import numpy as np
 import little_helpers
 import os
