@@ -6,7 +6,8 @@ from psychopy import visual, core, event
 ###############################################################################
 #                              global Parameters                              #
 ###############################################################################
-# parameters defining the size of the grid
+# parameters defining the size of the grid; just change tex_size to change size
+# of the window and all other size variables
 tex_size = 800
 n_tiles = 40
 size_box = ((tex_size / n_tiles), (tex_size / n_tiles))
@@ -21,7 +22,9 @@ highscore = little_helpers.reading_score()
 ###############################################################################
 #                              the visual window                              #
 ###############################################################################
-win = visual.Window(size=(800, 800), units="pix", colorSpace="rgb255", useFBO=False)
+win = visual.Window(
+    size=(tex_size, tex_size), units="pix", colorSpace="rgb255", useFBO=False
+)
 
 grey = [0, 0, 0]
 
@@ -119,7 +122,6 @@ counter = 0
 game_over = False
 food_x = np.random.randint(n_tiles + 1)
 food_y = np.random.randint(n_tiles + 1)
-food.pos = (food_x, food_y)
 length = 3
 points = None
 for i in range(length):
@@ -182,7 +184,6 @@ while not game_over:
         win.flip(clearBuffer=True)
         game_over = True
         break
-        # win.close()
 
     if x >= 40 or y >= 40 or x < 0 or y < 0:
         if settings["walls"] == "yes":
@@ -214,7 +215,6 @@ while not game_over:
 
     win.flip(clearBuffer=True)
     snake.draw()
-    food.draw()
 
     for i in range(length):
         tail.pos = points[i]
@@ -230,6 +230,9 @@ while not game_over:
         food_y = np.random.randint(n_tiles + 1)
         counter += 1
         length += 1
+        food.draw()
+    elif snake.pos[0] != food.pos[0] or snake.pos[1] != food.pos[1]:
+        food.draw()
 
     if points is None:
         points = current_points
