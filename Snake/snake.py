@@ -122,6 +122,7 @@ counter = 0
 game_over = False
 food_x = np.random.randint(n_tiles + 1)
 food_y = np.random.randint(n_tiles + 1)
+no_food = 0
 length = 3
 points = None
 for i in range(length):
@@ -226,13 +227,28 @@ while not game_over:
             break
 
     if snake.pos[0] == food.pos[0] and snake.pos[1] == food.pos[1]:
+        no_food = 0
         food_x = np.random.randint(n_tiles + 1)
         food_y = np.random.randint(n_tiles + 1)
         counter += 1
         length += 1
         food.draw()
     elif snake.pos[0] != food.pos[0] or snake.pos[1] != food.pos[1]:
-        food.draw()
+        no_food += 1
+        if no_food >= 50:
+            no_food = 0
+            food_x = np.random.randint(n_tiles + 1)
+            food_y = np.random.randint(n_tiles + 1)
+
+    food.pos = little_helpers.coord(
+        tex_size,
+        n_tiles,
+        size_box,
+        food_x,
+        food_y,
+    )
+
+    food.draw()
 
     if points is None:
         points = current_points
@@ -262,14 +278,6 @@ while not game_over:
         for fps in range(speed):
             fps
             core.wait(0.005)
-
-    food.pos = little_helpers.coord(
-        tex_size,
-        n_tiles,
-        size_box,
-        food_x,
-        food_y,
-    )
 
 ###############################################################################
 #                                 End screen                                  #
