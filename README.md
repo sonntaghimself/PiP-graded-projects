@@ -11,3 +11,7 @@ Experiment:
 
 in the GUI, you can actually determine, whether you want to record location or not. Turning this feature off is quite useful, if you want to take a look at the result file.
 It's a lot easier to read without the location.
+
+For demonstration purposes, the experiment only has to blocks, and 4 trials in
+each. but you can just uncomment the line below, to get a more realistic
+length.
