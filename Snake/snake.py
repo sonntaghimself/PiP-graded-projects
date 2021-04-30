@@ -235,7 +235,7 @@ while not game_over:
         food.draw()
     elif snake.pos[0] != food.pos[0] or snake.pos[1] != food.pos[1]:
         no_food += 1
-        if no_food >= 50:
+        if no_food >= (75 * (30 / speed)):
             no_food = 0
             food_x = np.random.randint(n_tiles + 1)
             food_y = np.random.randint(n_tiles + 1)
