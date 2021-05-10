@@ -112,10 +112,7 @@ elif settings["difficulty"] == "yoda":
 ###############################################################################
 #                       preparing the experimental loop                       #
 ###############################################################################
-up = False
-down = True
-right = False
-left = False
+direction = "down"
 x = y = 19
 score = 0
 counter = 0
@@ -132,7 +129,7 @@ for i in range(length):
             n_tiles,
             size_box,
             x,
-            (y + (i + 1)),
+            (y + i),
         )
     else:
         points = points + little_helpers.coord_list(
@@ -140,7 +137,7 @@ for i in range(length):
             n_tiles,
             size_box,
             x,
-            (y + (i + 1)),
+            (y + i),
         )
 
 
@@ -150,34 +147,31 @@ for i in range(length):
 while not game_over:
     cur_scr.text = little_helpers.current_score(counter)
     cur_scr.setAutoDraw(True)
+
     keys = event.getKeys()
     if ctrl_keys["up"] in keys:
-        if down:
-            down = True
+        if direction == "down":
+            direction = "down"
         else:
-            up = True
-            down = right = left = False
+            direction = "up"
             snake.ori = 180
     elif ctrl_keys["down"] in keys:
-        if up:
-            up = True
+        if direction == "up":
+            direction = "up"
         else:
-            down = True
-            up = right = left = False
+            direction = "down"
             snake.ori = 0
     elif ctrl_keys["right"] in keys:
-        if left:
-            left = True
+        if direction == "left":
+            direction = "left"
         else:
-            right = True
-            down = up = left = False
+            direction = "right"
             snake.ori = 270
     elif ctrl_keys["left"] in keys:
-        if right:
-            right = True
+        if direction == "right":
+            direction = "right"
         else:
-            left = True
-            up = right = down = False
+            direction = "left"
             snake.ori = 90
     elif "escape" in keys:
         snake.setAutoDraw(False)
@@ -186,7 +180,16 @@ while not game_over:
         game_over = True
         break
 
-    if x >= 40 or y >= 40 or x < 0 or y < 0:
+    if direction == "up":
+        y += 1
+    elif direction == "down":
+        y -= 1
+    elif direction == "right":
+        x += 1
+    elif direction == "left":
+        x -= 1
+
+    if x >= n_tiles or y >= n_tiles or x < 0 or y < 0:
         if settings["walls"] == "yes":
             snake.setAutoDraw(False)
             win.flip(clearBuffer=True)
@@ -194,14 +197,14 @@ while not game_over:
             break
 
         elif settings["walls"] != "yes":
-            if y >= 40:
-                y -= 40
+            if y >= n_tiles:
+                y -= n_tiles
             elif y < 0:
-                y += 40
-            if x >= 40:
-                x -= 40
+                y += n_tiles
+            if x >= n_tiles:
+                x -= n_tiles
             elif x < 0:
-                x += 40
+                x += n_tiles
 
     snake_pos_x, snake_pos_y = little_helpers.coord(
         tex_size,
@@ -214,22 +217,19 @@ while not game_over:
     snake.pos = (snake_pos_x, snake_pos_y)
     current_points = [(snake_pos_x, snake_pos_y)]
 
-    win.flip(clearBuffer=True)
     snake.draw()
 
-    for i in range(length):
-        tail.pos = points[i]
+    for point in points:
+        tail.pos = point
         tail.draw()
-
-    for i in range(1, length):
-        if snake_pos_x == points[i][0] and snake_pos_y == points[i][1]:
+        if snake_pos_x == point[0] and snake_pos_y == point[1]:
             game_over = True
             break
 
     if snake.pos[0] == food.pos[0] and snake.pos[1] == food.pos[1]:
         no_food = 0
-        food_x = np.random.randint(n_tiles + 1)
-        food_y = np.random.randint(n_tiles + 1)
+        food_x = np.random.randint(n_tiles)
+        food_y = np.random.randint(n_tiles)
         counter += 1
         length += 1
         food.draw()
@@ -250,34 +250,11 @@ while not game_over:
 
     food.draw()
 
-    if points is None:
-        points = current_points
-    elif points is not None:
-        points = current_points + points
+    points.insert(0, snake.pos)
+    points = points[0:length]
 
-    if len(points) > (length):
-        points.pop()
-
-    if up:
-        y += 1
-        for fps in range(speed):
-            fps
-            core.wait(0.005)
-    elif down:
-        y -= 1
-        for fps in range(speed):
-            fps
-            core.wait(0.005)
-    elif right:
-        x += 1
-        for fps in range(speed):
-            fps
-            core.wait(0.005)
-    elif left:
-        x -= 1
-        for fps in range(speed):
-            fps
-            core.wait(0.005)
+    win.flip()
+    core.wait(0.005 * speed)
 
 ###############################################################################
 #                                 End screen                                  #

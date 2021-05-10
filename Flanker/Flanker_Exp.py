@@ -12,9 +12,10 @@ from psychopy import visual, event, core
 parameters = {
     "time": {"fix": 30, "feedback": 30, "iti": 30},
     # "num": {"nblks": 5, "pracblks": 1, "nprac": 4, "ntrls": 20},
-    "num": {"nblks": 1, "pracblks": 1, "nprac": 4, "ntrls": 4},
+    "num": {"nblks": 4, "pracblks": 1, "nprac": 4, "ntrls": 4},
     "keys": "space",
-    "size_boxes": (50, 50),
+    "size_boxes_large": (50, 50),
+    "size_boxes_small": (25, 25),
     "clicks": {"H": "left", "S": "right"},
 }
 
@@ -71,9 +72,9 @@ fixStim = visual.ShapeStim(
     closeShape=False,
 )
 flankerStim = visual.TextStim(win, height=32)
-start_box = visual.Rect(win, pos=(0, -200), size=parameters["size_boxes"])
-left_box = visual.Rect(win, pos=(-285, 200), size=parameters["size_boxes"])
-right_box = visual.Rect(win, pos=(285, 200), size=parameters["size_boxes"])
+start_box = visual.Rect(win, pos=(0, -200), size=parameters["size_boxes_large"])
+left_box = visual.Rect(win, pos=(-285, 200), size=parameters["size_boxes_large"])
+right_box = visual.Rect(win, pos=(285, 200), size=parameters["size_boxes_large"])
 
 mouse = event.Mouse(win=win, visible=True)
 
@@ -114,6 +115,8 @@ for blk in expSeq:  # block loop
         # present flanker stimulus and reset stop watch
         flankerStim.text = trl["stimulus"]
         flankerStim.draw()
+        left_box.size = parameters[trl["size_boxes_exp"]]
+        right_box.size = parameters[trl["size_boxes_exp"]]
         left_box.draw()
         right_box.draw()
 

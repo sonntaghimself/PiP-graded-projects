@@ -90,12 +90,19 @@ def randomization(stimuli, compatibility, vpInfo, parameters, files):
             else:
                 stim_blk = stim * int((parameters["num"]["nprac"] / len(stim)))
             practice = True
+
+            size_boxes_exp = "size_boxes_large"
         else:
             if parameters["num"]["ntrls"] <= 4:
                 stim_blk = stim
             else:
                 stim_blk = stim * int((parameters["num"]["ntrls"] / len(stim)))
             practice = False
+
+            if iblk % 2 == 0:
+                size_boxes_exp = "size_boxes_large"
+            elif iblk % 2 != 0:
+                size_boxes_exp = "size_boxes_small"
 
         random.shuffle(stim_blk)
 
@@ -113,6 +120,7 @@ def randomization(stimuli, compatibility, vpInfo, parameters, files):
             trl["practice"] = practice
             trl["stimulus"] = stim_blk[itrl][0]
             trl["compatibility"] = stim_blk[itrl][1]
+            trl["size_boxes_exp"] = size_boxes_exp
 
             if trl["stimulus"][2] == "H":
                 trl["corr_resp"] = parameters["clicks"]["H"]
